@@ -241,7 +241,7 @@ function App() {
         </div>
       ))}
       <header className={`App-header ${isGenerating ? 'generating' : ''}`}>
-        <h1>[ CHORD GENERATOR 3000 ]</h1>
+        <h1>CHORD GENERATOR 3000</h1>
         <div className="controls">
           <RetroSelect
             label="KEY:"

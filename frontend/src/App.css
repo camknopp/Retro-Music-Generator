@@ -220,6 +220,8 @@ h1 {
     inset 0 0 10px rgba(1, 205, 254, 0.2);
   -webkit-text-stroke: 1px rgba(255, 251, 150, 0.5);
   position: relative;
+  text-align: center;
+  margin: 0 auto 1.5rem auto;
 }
 
 h1::after {
