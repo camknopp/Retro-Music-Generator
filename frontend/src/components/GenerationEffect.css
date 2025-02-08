@@ -1,0 +1,489 @@
+.generation-effect {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(3px);
+}
+
+.cyber-grid {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: 
+    linear-gradient(90deg, var(--neon-blue) 0.1px, transparent 1px),
+    linear-gradient(0deg, var(--neon-blue) 0.1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0;
+  transform: translate(-25%, -25%) rotate(0deg);
+  animation: grid-appear 0.3s ease forwards,
+             grid-spin 4s linear infinite;
+}
+
+@keyframes grid-appear {
+  0% {
+    opacity: 0;
+    transform: translate(-25%, -25%) rotate(0deg) scale(2);
+  }
+  100% {
+    opacity: 0.15;
+    transform: translate(-25%, -25%) rotate(45deg) scale(1);
+  }
+}
+
+@keyframes grid-spin {
+  0% {
+    transform: translate(-25%, -25%) rotate(45deg) scale(1);
+  }
+  100% {
+    transform: translate(-25%, -25%) rotate(405deg) scale(1);
+  }
+}
+
+.loading-ring {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: ring-pulse 2s ease-in-out infinite;
+}
+
+.loading-circles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: spin 8s linear infinite;
+}
+
+.circle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: var(--neon-blue);
+  border-radius: 50%;
+  transform-origin: 100px 100px;
+  animation: circle-appear 0.3s ease forwards;
+  opacity: 0;
+  filter: blur(1px);
+  --angle: calc(var(--i) * 45deg);
+  transform: rotate(var(--angle)) translateX(80px);
+  animation-delay: calc(var(--i) * 0.05s);
+}
+
+@keyframes circle-appear {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateX(60px);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(var(--angle)) translateX(80px);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  color: var(--neon-blue);
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  text-shadow: 0 0 10px var(--neon-blue);
+  animation: text-pulse 2s ease-in-out infinite;
+  opacity: 0;
+  animation: text-appear 0.3s ease forwards;
+}
+
+@keyframes text-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes text-pulse {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.5);
+  }
+}
+
+@keyframes ring-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Add scanlines over the entire effect */
+.generation-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+.terminal {
+  width: 90%;
+  max-width: 600px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid var(--neon-blue);
+  box-shadow: 0 0 20px var(--neon-blue);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.terminal-header {
+  background: var(--neon-blue);
+  color: var(--dark-bg);
+  padding: 8px 12px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.terminal-controls {
+  display: flex;
+  gap: 15px;
+  font-size: 0.6rem;
+}
+
+.cpu-load, .memory-load {
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.terminal-content {
+  padding: 20px; /* Increased padding */
+  max-height: 400px; /* Increased height */
+  overflow-y: auto;
+}
+
+.terminal-line {
+  margin-bottom: 16px; /* Increased spacing between lines */
+  font-family: monospace;
+  font-size: 1rem; /* Increased font size */
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+  animation-delay: calc(var(--line-index, 0) * 0.8s); /* Add delay based on line position */
+  position: relative;
+}
+
+.terminal-prefix {
+  color: var(--neon-green);
+  margin-right: 8px;
+}
+
+.terminal-text {
+  color: var(--neon-blue);
+  font-weight: bold; /* Make text bolder */
+  letter-spacing: 0.5px; /* Add slight letter spacing */
+  text-shadow: 0 0 5px var(--neon-blue); /* Add glow effect */
+}
+
+.terminal-progress {
+  margin-top: 8px; /* Increased spacing */
+  height: 6px; /* Slightly taller progress bar */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  position: relative;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+  box-shadow: 0 0 10px var(--neon-green);
+  transition: width 0.2s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: progressShine 1s linear infinite;
+}
+
+@keyframes progressShine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-message {
+  position: absolute;
+  left: 8px;
+  color: var(--neon-yellow);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.progress-text {
+  position: absolute;
+  right: -40px;
+  font-size: 0.7rem;
+  color: var(--neon-green);
+  text-shadow: 0 0 3px var(--neon-green);
+}
+
+.success-message {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(5, 255, 161, 0.1);
+  border: 2px solid var(--neon-green);
+  border-radius: 5px;
+  text-align: center;
+  animation: successAppear 0.5s ease-out forwards;
+}
+
+.success-text {
+  color: var(--neon-green);
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-shadow: 0 0 5px var(--neon-green);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.success-subtext {
+  color: var(--neon-blue);
+  font-size: 0.7rem;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out 0.3s forwards;
+}
+
+.emoji-left, .emoji-right {
+  font-size: 1.2rem;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.emoji-right {
+  animation-delay: 0.5s;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes successAppear {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.generation-effect.complete {
+  animation: fadeOut 0.5s ease-in forwards 2s;
+}
+
+.terminal.success {
+  animation: successGlow 2s ease-in-out infinite;
+}
+
+@keyframes successGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px var(--neon-green);
+    border-color: var(--neon-green);
+  }
+  50% {
+    box-shadow: 0 0 30px var(--neon-green), 0 0 50px var(--neon-blue);
+    border-color: var(--neon-blue);
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+  }
+}
+
+/* Make the progress bars more playful */
+.terminal-line:nth-child(odd) .progress-bar {
+  background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue));
+}
+
+.terminal-line:nth-child(even) .progress-bar {
+  background: linear-gradient(90deg, var(--neon-green), var(--neon-yellow));
+}
+
+/* Add some movement to the terminal when complete */
+.terminal.success {
+  transform-origin: center;
+  animation: successBounce 0.5s ease-out;
+}
+
+@keyframes successBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.terminal-progress {
+  margin-top: 8px; /* Increased spacing */
+  height: 6px; /* Slightly taller progress bar */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  position: relative;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--neon-green);
+  box-shadow: 0 0 10px var(--neon-green);
+  transition: width 0.3s ease; /* Smoother progress updates */
+}
+
+.progress-text {
+  position: absolute;
+  right: -30px; /* Moved percentage further right */
+  font-size: 0.7rem;
+  color: var(--neon-green);
+  text-shadow: 0 0 3px var(--neon-green);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Remove the flash effect */
+.generate-flash {
+  display: none;
+}
+
+/* Add scanline effect */
+.terminal::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Add CRT flicker */
+.terminal {
+  animation: flicker 0.15s infinite;
+}
+
+@keyframes flicker {
+  0% { opacity: 0.98; }
+  50% { opacity: 1; }
+  100% { opacity: 0.98; }
+}
+
+/* Add subtle scan effect */
+.terminal-line {
+  position: relative;
+}
+
+.terminal-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(1, 205, 254, 0.2),
+    transparent
+  );
+  animation: scan 2s linear infinite;
+}
+
+@keyframes scan {
+  from { left: -100%; }
+  to { left: 100%; }
+}

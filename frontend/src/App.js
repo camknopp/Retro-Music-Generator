@@ -4,6 +4,7 @@ import Soundfont from 'soundfont-player';
 import RetroBackground from './components/RetroBackground';
 import './components/RetroBackground.css';
 import MatrixRain from './components/MatrixRain';
+import GenerationEffect from './components/GenerationEffect';
 
 function App() {
   const [key, setKey] = useState('C');
@@ -15,6 +16,8 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [midiBlob, setMidiBlob] = useState(null);
   const [progressionType, setProgressionType] = useState('jazz');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [dataStreams, setDataStreams] = useState([]);
 
   const instruments = [
     'acoustic_grand_piano',
@@ -63,7 +66,33 @@ function App() {
     }
   };
 
+  const createDataStream = () => {
+    const types = ['DATA', 'FREQ', 'HARM', 'PROG', 'SYNC', 'MIDI'];
+    const values = Array(4).fill(0).map(() => 
+      Math.floor(Math.random() * 999).toString().padStart(3, '0')
+    );
+    return `${types[Math.floor(Math.random() * types.length)]}:${values.join(':')}`;
+  };
+
+  const spawnDataStream = () => {
+    const stream = {
+      id: Math.random(),
+      text: createDataStream(),
+      style: {
+        left: `${Math.random() * 80 + 10}%`,
+        top: `${Math.random() * 80 + 10}%`,
+      }
+    };
+    setDataStreams(prev => [...prev, stream]);
+    setTimeout(() => {
+      setDataStreams(prev => prev.filter(s => s.id !== stream.id));
+    }, 1500);
+  };
+
   const handleGenerate = async () => {
+    setIsGenerating(true);
+    const streamInterval = setInterval(spawnDataStream, 300);
+    
     try {
       const ac = await ensureAudioContext();
       
@@ -85,12 +114,18 @@ function App() {
         { type: 'audio/midi' });
       setMidiBlob(blob);
 
-      // Ensure instrument is loaded
       if (!player) {
         await loadInstrument(ac);
       }
+
+      // Keep generation effect visible longer
+      // 7 messages * 600ms delay + 2000ms for progress bars + 1000ms for success message
+      setTimeout(() => setIsGenerating(false), 8000);
     } catch (error) {
       console.error('Error generating progression:', error);
+      setIsGenerating(false);
+    } finally {
+      clearInterval(streamInterval);
     }
   };
 
@@ -184,7 +219,17 @@ function App() {
     <div className="App">
       <MatrixRain />
       <RetroBackground />
-      <header className="App-header">
+      {isGenerating && <GenerationEffect />}
+      {dataStreams.map(stream => (
+        <div 
+          key={stream.id}
+          className="data-stream active"
+          style={stream.style}
+        >
+          {stream.text}
+        </div>
+      ))}
+      <header className={`App-header ${isGenerating ? 'generating' : ''}`}>
         <h1>[ RETRO CHORD GENERATOR ]</h1>
         <div className="controls">
           <div className="control-group" data-type="key">
@@ -245,10 +290,10 @@ function App() {
           <div className="generate-button-container">
             <button 
               onClick={handleGenerate} 
-              disabled={isPlaying}
+              disabled={isPlaying || isGenerating}
               className="generate-btn"
             >
-              &gt;&gt; GENERATE &lt;&lt;
+              {isGenerating ? '>> GENERATING <<' : '>> GENERATE <<'}
             </button>
           </div>
         </div>

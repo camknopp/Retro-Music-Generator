@@ -846,3 +846,76 @@ select:focus .scrolling-option {
 canvas {
   z-index: 0 !important;
 }
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    filter: brightness(1) blur(3px);
+  }
+  50% {
+    filter: brightness(1.5) blur(6px);
+  }
+}
+
+.generating {
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.generating .control-group,
+.generating button {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.data-stream {
+  position: fixed;
+  font-family: monospace;
+  color: var(--neon-green);
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 4px 8px;
+  border-radius: 2px;
+  border: 1px solid var(--neon-green);
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 0 5px rgba(5, 255, 161, 0.3);
+}
+
+.data-stream.active {
+  animation: streamFade 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes streamFade {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9);
+  }
+}
+
+/* Remove flash-related styles */
+.generate-flash,
+.generating::before {
+  display: none;
+}
