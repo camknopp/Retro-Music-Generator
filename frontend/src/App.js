@@ -3,6 +3,7 @@ import './App.css';
 import Soundfont from 'soundfont-player';
 import RetroBackground from './components/RetroBackground';
 import './components/RetroBackground.css';
+import MatrixRain from './components/MatrixRain';
 
 function App() {
   const [key, setKey] = useState('C');
@@ -181,6 +182,7 @@ function App() {
 
   return (
     <div className="App">
+      <MatrixRain />
       <RetroBackground />
       <header className="App-header">
         <h1>[ RETRO CHORD GENERATOR ]</h1>
