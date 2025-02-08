@@ -22,9 +22,11 @@ const RetroSelect = ({ value, onChange, options, label, type }) => {
   }, []);
 
   const handleSelect = (option) => {
-    setSelectedValue(option.value || option);
+    // Use the id if available, otherwise fallback to the option itself
+    const newValue = option.id || option;
+    setSelectedValue(newValue);
     setIsOpen(false);
-    onChange({ target: { value: option.value || option } });
+    onChange({ target: { value: newValue } });
   };
 
   const getDisplayValue = (val) => {

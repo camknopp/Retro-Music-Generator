@@ -96,6 +96,7 @@ function App() {
     
     try {
       const ac = await ensureAudioContext();
+      await ac.resume(); // Ensure audio context is active
       
       const response = await fetch('http://localhost:3001/generate', {
         method: 'POST',
@@ -115,12 +116,11 @@ function App() {
         { type: 'audio/midi' });
       setMidiBlob(blob);
 
+      // Load instrument immediately after generation
       if (!player) {
         await loadInstrument(ac);
       }
 
-      // Keep generation effect visible longer
-      // 7 messages * 600ms delay + 2000ms for progress bars + 1000ms for success message
       setTimeout(() => setIsGenerating(false), 8000);
     } catch (error) {
       console.error('Error generating progression:', error);
@@ -135,28 +135,36 @@ function App() {
     
     try {
       const ac = await ensureAudioContext();
+      await ac.resume();
       let currentPlayer = player;
       
       if (!currentPlayer) {
         currentPlayer = await loadInstrument(ac);
+        if (!currentPlayer) {
+          console.error('Failed to load instrument');
+          return;
+        }
       }
-      
-      if (!currentPlayer) return;
 
       setIsPlaying(true);
       
-      for (const chord of noteData) {
-        if (!isPlaying) break;
-        await new Promise((resolve) => {
-          chord.notes.forEach(note => {
-            currentPlayer.play(note, ac.currentTime, { duration: chord.duration });
-          });
-          setTimeout(resolve, chord.duration * 1000);
+      // Schedule all notes at once with precise timing
+      for (let i = 0; i < noteData.length; i++) {
+        const chord = noteData[i];
+        const startTime = ac.currentTime + (i * chord.duration);
+        
+        chord.notes.forEach(note => {
+          currentPlayer.play(note, startTime, { duration: chord.duration });
         });
       }
+
+      // Calculate total duration and wait for playback to complete
+      const totalDuration = noteData.reduce((sum, chord) => sum + chord.duration, 0);
+      await new Promise(resolve => setTimeout(resolve, totalDuration * 1000));
+      
+      setIsPlaying(false);
     } catch (error) {
       console.error('Error playing progression:', error);
-    } finally {
       setIsPlaying(false);
     }
   };
@@ -176,9 +184,11 @@ function App() {
     setPlayer(null);
     handleParameterChange();
 
-    // Pre-load the new instrument if we have an audio context
-    if (audioContext) {
-      await loadInstrument(audioContext);
+    try {
+      const ac = await ensureAudioContext();
+      await loadInstrument(ac);
+    } catch (error) {
+      console.error('Error loading new instrument:', error);
     }
   };
 

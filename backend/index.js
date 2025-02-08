@@ -188,13 +188,27 @@ app.post('/generate', (req, res) => {
     return generateChord(root, chord, inversion);
   });
 
-  chords.forEach((chord) => {
+  let currentTime = 0;
+  const noteData = chords.map((chord) => {
+    const duration = 2; // Duration in seconds
+    const data = {
+      notes: chord,
+      duration: duration,
+      time: currentTime,
+      velocity: 85
+    };
+    currentTime += duration;
+    return data;
+  });
+
+  // Create MIDI events
+  noteData.forEach((chord) => {
     const noteEvent = new MidiWriter.NoteEvent({
-      pitch: chord,
+      pitch: chord.notes,
       duration: '2',
-      velocity: 85,
+      velocity: chord.velocity,
       channel: 1,
-      sequential: false // Play notes simultaneously as a chord
+      sequential: false
     });
     track.addEvent(noteEvent);
   });
@@ -203,12 +217,7 @@ app.post('/generate', (req, res) => {
   
   res.json({
     midi: Buffer.from(writer.buildFile()).toString('base64'),
-    noteData: chords.map((chord, index) => ({
-      notes: chord,
-      duration: 2,
-      time: index * 2,
-      velocity: 85 // Include velocity for consistent playback
-    }))
+    noteData: noteData
   });
 });
 
