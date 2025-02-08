@@ -5,6 +5,7 @@ import RetroBackground from './components/RetroBackground';
 import './components/RetroBackground.css';
 import MatrixRain from './components/MatrixRain';
 import GenerationEffect from './components/GenerationEffect';
+import RetroSelect from './components/RetroSelect';
 
 function App() {
   const [key, setKey] = useState('C');
@@ -230,62 +231,42 @@ function App() {
         </div>
       ))}
       <header className={`App-header ${isGenerating ? 'generating' : ''}`}>
-        <h1>[ RETRO CHORD GENERATOR ]</h1>
+        <h1>[ CHORD GENERATOR 3000 ]</h1>
         <div className="controls">
-          <div className="control-group" data-type="key">
-            <label htmlFor="key">KEY:</label>
-            <select 
-              id="key" 
-              value={key} 
-              onChange={(e) => {
-                setKey(e.target.value);
-                handleParameterChange();
-              }}
-            >
-              <option value="C">C</option>
-              <option value="D">D</option>
-              <option value="E">E</option>
-              <option value="F">F</option>
-              <option value="G">G</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-            </select>
-          </div>
+          <RetroSelect
+            label="KEY:"
+            value={key}
+            onChange={(e) => {
+              setKey(e.target.value);
+              handleParameterChange();
+            }}
+            options={['C', 'D', 'E', 'F', 'G', 'A', 'B']}
+            type="key"
+          />
           
-          <div className={`control-group progression-${progressionType}`} data-type="progressionType">
-            <label htmlFor="progressionType">STYLE:</label>
-            <select 
-              id="progressionType" 
-              value={progressionType} 
-              onChange={(e) => {
-                setProgressionType(e.target.value);
-                handleParameterChange();
-              }}
-              disabled={isPlaying}
-            >
-              {progressionTypes.map(type => (
-                <option key={type.id} value={type.id} className="scrolling-option">
-                  {type.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <RetroSelect
+            label="STYLE:"
+            value={progressionType}
+            onChange={(e) => {
+              setProgressionType(e.target.value);
+              handleParameterChange();
+            }}
+            options={progressionTypes}
+            type="progressionType"
+            disabled={isPlaying}
+          />
           
-          <div className="control-group" data-type="instrument">
-            <label htmlFor="instrument">INSTRUMENT:</label>
-            <select 
-              id="instrument" 
-              value={instrument} 
-              onChange={(e) => handleInstrumentChange(e.target.value)}
-              disabled={isLoading || isPlaying}
-            >
-              {instruments.map(inst => (
-                <option key={inst} value={inst} className="scrolling-option">
-                  {formatDisplayText(inst)}
-                </option>
-              ))}
-            </select>
-          </div>
+          <RetroSelect
+            label="INSTRUMENT:"
+            value={instrument}
+            onChange={(e) => handleInstrumentChange(e.target.value)}
+            options={instruments.map(inst => ({
+              id: inst,
+              name: formatDisplayText(inst)
+            }))}
+            type="instrument"
+            disabled={isLoading || isPlaying}
+          />
 
           <div className="generate-button-container">
             <button 

@@ -1,0 +1,248 @@
+.retro-select-container {
+  position: relative;
+  width: 100%;
+}
+
+.retro-select {
+  position: relative;
+  padding: 0.7rem;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: var(--neon-green);
+  border: 2px solid var(--neon-green);
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.8rem;
+  text-align: center;
+  cursor: pointer;
+  text-transform: uppercase;
+  box-shadow: 
+    0 0 5px var(--neon-green),
+    inset 0 0 10px rgba(5, 255, 161, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.retro-select:hover {
+  box-shadow: 
+    0 0 15px var(--neon-green),
+    inset 0 0 15px rgba(5, 255, 161, 0.3);
+  transform: scale(1.02);
+  background-color: rgba(5, 255, 161, 0.1);
+}
+
+.retro-select.open {
+  border-radius: 5px 5px 0 0;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--neon-green);
+  border-bottom: 2px solid var(--neon-green);
+  transform: translateY(-50%) rotate(45deg);
+  transition: transform 0.3s ease;
+}
+
+.retro-select.open .select-arrow {
+  transform: translateY(-50%) rotate(-135deg);
+}
+
+.options-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  border: 2px solid var(--neon-green);
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.8),
+    0 0 15px var(--neon-green);
+  z-index: 1000;
+  animation: dropdownAppear 0.3s ease-out;
+  backdrop-filter: blur(10px);
+}
+
+.options-list {
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-green) rgba(0, 0, 0, 0.3);
+}
+
+.options-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.options-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.options-list::-webkit-scrollbar-thumb {
+  background: var(--neon-green);
+  border-radius: 3px;
+  box-shadow: 0 0 5px var(--neon-green);
+}
+
+.option {
+  padding: 0.7rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  animation: optionAppear 0.3s ease-out;
+  animation-delay: calc(var(--index) * 0.05s);
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+.option:hover {
+  background: rgba(5, 255, 161, 0.1);
+}
+
+.option.selected {
+  background: rgba(5, 255, 161, 0.2);
+  color: var(--neon-yellow);
+  text-shadow: 0 0 5px var(--neon-yellow);
+}
+
+.option-highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(5, 255, 161, 0.1),
+    transparent
+  );
+  transform: translateX(-100%);
+  pointer-events: none;
+}
+
+.option:hover .option-highlight {
+  animation: highlightScan 1s linear infinite;
+}
+
+/* Color variations based on type */
+.key .retro-select {
+  border-color: var(--neon-yellow);
+  color: var(--neon-yellow);
+  box-shadow: 
+    0 0 5px var(--neon-yellow),
+    inset 0 0 10px rgba(255, 251, 150, 0.2);
+}
+
+.key .retro-select:hover {
+  box-shadow: 
+    0 0 15px var(--neon-yellow),
+    inset 0 0 15px rgba(255, 251, 150, 0.3);
+  background-color: rgba(255, 251, 150, 0.1);
+}
+
+.key .options-container {
+  border-color: var(--neon-yellow);
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.8),
+    0 0 15px var(--neon-yellow);
+}
+
+.progressionType .retro-select {
+  border-color: var(--neon-pink);
+  color: var(--neon-pink);
+  box-shadow: 
+    0 0 5px var(--neon-pink),
+    inset 0 0 10px rgba(255, 113, 206, 0.2);
+}
+
+.progressionType .retro-select:hover {
+  box-shadow: 
+    0 0 15px var(--neon-pink),
+    inset 0 0 15px rgba(255, 113, 206, 0.3);
+  background-color: rgba(255, 113, 206, 0.1);
+}
+
+.progressionType .options-container {
+  border-color: var(--neon-pink);
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.8),
+    0 0 15px var(--neon-pink);
+}
+
+.instrument .retro-select {
+  border-color: var(--neon-blue);
+  color: var(--neon-blue);
+  box-shadow: 
+    0 0 5px var(--neon-blue),
+    inset 0 0 10px rgba(1, 205, 254, 0.2);
+}
+
+.instrument .retro-select:hover {
+  box-shadow: 
+    0 0 15px var(--neon-blue),
+    inset 0 0 15px rgba(1, 205, 254, 0.3);
+  background-color: rgba(1, 205, 254, 0.1);
+}
+
+.instrument .options-container {
+  border-color: var(--neon-blue);
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.8),
+    0 0 15px var(--neon-blue);
+}
+
+@keyframes dropdownAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes optionAppear {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes highlightScan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Scanline effect */
+.retro-select::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(255, 255, 255, 0.03) 1px,
+    rgba(255, 255, 255, 0.03) 2px
+  );
+  pointer-events: none;
+}
