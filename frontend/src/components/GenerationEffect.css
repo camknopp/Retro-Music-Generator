@@ -158,12 +158,12 @@
 
 .terminal {
   width: 90%;
-  max-width: 600px;
+  max-width: 800px; /* Increased from 600px */
   background: rgba(0, 0, 0, 0.9);
   border: 2px solid var(--neon-blue);
   box-shadow: 0 0 20px var(--neon-blue);
   border-radius: 5px;
-  overflow: hidden;
+  overflow: hidden; /* Ensure no scrollbars appear */
 }
 
 .terminal-header {
@@ -188,9 +188,10 @@
 }
 
 .terminal-content {
-  padding: 20px; /* Increased padding */
-  max-height: 400px; /* Increased height */
+  padding: 20px 30px; /* Increased horizontal padding */
+  max-height: 450px; /* Increased from 400px */
   overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .terminal-line {
@@ -224,6 +225,8 @@
   overflow: visible;
   display: flex;
   align-items: center;
+  margin-right: 45px; /* Added margin to prevent progress text cutoff */
+  margin-bottom: 5px; /* Added bottom margin */
 }
 
 .progress-bar {
@@ -267,14 +270,16 @@
 
 .progress-text {
   position: absolute;
-  right: -40px;
+  right: -30px; /* Moved percentage further right */
   font-size: 0.7rem;
   color: var(--neon-green);
   text-shadow: 0 0 3px var(--neon-green);
+  white-space: nowrap; /* Prevent percentage from wrapping */
 }
 
 .success-message {
   margin-top: 20px;
+  margin-bottom: 20px; /* Added bottom margin */
   padding: 15px;
   background: rgba(5, 255, 161, 0.1);
   border: 2px solid var(--neon-green);
@@ -388,32 +393,6 @@
   0% { transform: scale(1); }
   50% { transform: scale(1.02); }
   100% { transform: scale(1); }
-}
-
-.terminal-progress {
-  margin-top: 8px; /* Increased spacing */
-  height: 6px; /* Slightly taller progress bar */
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-  position: relative;
-  overflow: visible;
-  display: flex;
-  align-items: center;
-}
-
-.progress-bar {
-  height: 100%;
-  background: var(--neon-green);
-  box-shadow: 0 0 10px var(--neon-green);
-  transition: width 0.3s ease; /* Smoother progress updates */
-}
-
-.progress-text {
-  position: absolute;
-  right: -30px; /* Moved percentage further right */
-  font-size: 0.7rem;
-  color: var(--neon-green);
-  text-shadow: 0 0 3px var(--neon-green);
 }
 
 @keyframes fadeIn {
